@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Known Points - CRS Validation</name>
+    <Placemark>
+      <name>Golden Gate Bridge, San Francisco CA</name>
+      <Point>
+        <coordinates>-122.4783,37.8199,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>San Francisco City Hall</name>
+      <Point>
+        <coordinates>-122.4193,37.7793,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>San Jose City Hall</name>
+      <Point>
+        <coordinates>-121.8863,37.3382,0</coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>Sample Road Centerline</name>
+      <LineString>
+        <coordinates>
+          -122.4783,37.8199,0
+          -122.4770,37.8210,0
+          -122.4755,37.8222,0
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

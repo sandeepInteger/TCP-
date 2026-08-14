@@ -1,0 +1,13 @@
+# Category B feature classification (tcp-automation-plan.md): raw KMZ data
+# never says "this placemark is a speed limit sign" — that has to come from
+# metadata (here, the icon a survey vendor used) plus a human-confirmed
+# mapping. Edit this file when a new vendor's icon set is encountered;
+# don't hard-code icon filenames in code.
+#
+# Matching is a case-insensitive substring check against the icon's href
+# (its filename or URL, e.g. "files/car-24.png" matches keyword "car").
+speed_limit_sign:
+  icon_href_keywords:
+    - car
+    - cab
+    - vehicle

@@ -1,0 +1,21 @@
+# External road-centerline lookup source — used to snap a work-area point
+# onto the real road and trim its traced shape around that point, instead
+# of relying on a hand-traced centerline in the KMZ.
+#
+# PLACEHOLDER: currently Caltrans' "All Roads" (ARNOLD) ArcGIS REST
+# FeatureServer, which only covers California. Swap query_url (and
+# name_field, if the new service labels roads differently) for the correct
+# state/county GIS service for the actual job location — no code changes
+# needed, this is the only place that has to change.
+query_url: "https://caltrans-gis.dot.ca.gov/arcgis/rest/services/CHhighway/All_Roads/FeatureServer/0/query"
+name_field: RouteId
+default_search_radius_ft: 150
+
+# Generalization tolerance (degrees) used ONLY when listing nearby road
+# candidates by name/rough distance — not when fetching the geometry that
+# actually gets drawn. Without this, a candidate search that happens to be
+# near a state highway can trigger downloading that highway's entire
+# un-clipped route (seen at 7MB+ in testing) just to list its name. ~0.0003
+# deg is roughly 90 ft at CA latitudes — coarse, but fine for "how far is
+# this named road, roughly" when picking which road is correct.
+candidate_search_generalize_degrees: 0.0003

@@ -1,0 +1,17 @@
+# Coordinate reference system settings for the KMZ -> AutoCAD transform.
+#
+# source_crs is fixed: KMZ/KML always stores WGS84 lat/lon (EPSG:4326).
+# target_crs must be a foot-based CRS, not meters, or the geometry engine's
+# walk-along-centerline distances (and every TCP dimension: taper, buffer,
+# sign spacing, cone spacing) will be wrong by ~3.28x.
+source_crs: "EPSG:4326"
+
+# NAD83 / California Zone 3 (ftUS) — covers the Bay Area / Central Coast
+# (San Francisco, Alameda, Santa Clara, San Mateo, Santa Cruz, Monterey).
+# If job sites expand outside this zone (e.g. Sacramento -> Zone 2/EPSG:2226,
+# LA -> Zone 5/EPSG:2229, San Diego -> Zone 6/EPSG:2230), swap the epsg
+# value below — no code changes required.
+target_crs: "EPSG:2227"
+
+# Units of target_crs coordinates, informational only (used in reports/logs).
+target_units: "US Survey Feet"

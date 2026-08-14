@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Icon Style Resolution Test</name>
+
+    <Style id="pole-style">
+      <IconStyle>
+        <Icon>
+          <href>files/pole_icon.png</href>
+        </Icon>
+      </IconStyle>
+    </Style>
+
+    <StyleMap id="pole-stylemap">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#pole-style</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#pole-style</styleUrl>
+      </Pair>
+    </StyleMap>
+
+    <Placemark>
+      <name>Pole via direct styleUrl</name>
+      <styleUrl>#pole-style</styleUrl>
+      <Point>
+        <coordinates>-87.635915,41.878876,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <Placemark>
+      <name>Pole via StyleMap styleUrl</name>
+      <styleUrl>#pole-stylemap</styleUrl>
+      <Point>
+        <coordinates>-87.634000,41.879500,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <Placemark>
+      <name>Speed Limit 35 (inline style)</name>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>files/pole_icon.png</href>
+          </Icon>
+        </IconStyle>
+      </Style>
+      <Point>
+        <coordinates>-87.632000,41.880200,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <Placemark>
+      <name>No icon at all</name>
+      <Point>
+        <coordinates>-87.630000,41.880900,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <Placemark>
+      <name>Remote stock icon</name>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>http://maps.google.com/mapfiles/kml/shapes/road_shield3.png</href>
+          </Icon>
+        </IconStyle>
+      </Style>
+      <Point>
+        <coordinates>-87.628000,41.881600,0</coordinates>
+      </Point>
+    </Placemark>
+
+    <Placemark>
+      <name>25 MPH</name>
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>files/car_icon.png</href>
+          </Icon>
+        </IconStyle>
+      </Style>
+      <Point>
+        <coordinates>-87.626000,41.882300,0</coordinates>
+      </Point>
+    </Placemark>
+  </Document>
+</kml>

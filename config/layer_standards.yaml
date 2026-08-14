@@ -1,0 +1,93 @@
+# AutoCAD layer standards — Step 6/7 of tcp-automation-plan.md.
+#
+# One entry per feature attribute. color is an AutoCAD Color Index (ACI,
+# 1-255; see https://gohtx.com/acadcolors.php). lineweight is in hundredths
+# of a millimeter (ezdxf/DXF convention — e.g. 25 = 0.25mm).
+#
+# PLACEHOLDER: colors/lineweights below are reasonable engineering-drawing
+# defaults, not yet confirmed against a real TCP standard. Swap them once
+# the actual client/jurisdiction standard is known — no code changes needed,
+# this is the only place that has to change.
+CENTER_LINE:
+  layer: TCP_CENTERLINE
+  color: 2 # yellow
+  linetype: CONTINUOUS
+  lineweight: 25
+
+LANE_DASH:
+  layer: TCP_LANE_DASH
+  color: 2 # yellow
+  linetype: DASHED
+  lineweight: 25
+
+SIDEWALK:
+  layer: TCP_SIDEWALK
+  color: 8 # gray
+  linetype: CONTINUOUS
+  lineweight: 18
+
+DRIVEWAY:
+  layer: TCP_DRIVEWAY
+  color: 8 # gray
+  linetype: CONTINUOUS
+  lineweight: 18
+
+STRIPING:
+  layer: TCP_STRIPING
+  color: 7 # white/black
+  linetype: CONTINUOUS
+  lineweight: 13
+
+PAINTED_MEDIAN:
+  layer: TCP_PAINTED_MEDIAN
+  color: 1 # red
+  linetype: CONTINUOUS
+  lineweight: 18
+
+RAISED_MEDIAN:
+  layer: TCP_RAISED_MEDIAN
+  color: 30 # orange
+  linetype: CONTINUOUS
+  lineweight: 30
+
+EX_ARROW:
+  layer: TCP_ARROW
+  color: 7 # white/black
+  linetype: CONTINUOUS
+  lineweight: 13
+
+CURB:
+  layer: TCP_CURB
+  color: 252 # dark gray
+  linetype: CONTINUOUS
+  lineweight: 20
+
+BUFFER_ZONE:
+  layer: TCP_BUFFER
+  color: 5 # blue
+  linetype: DASHED
+  lineweight: 20
+
+TAPER_ZONE:
+  layer: TCP_TAPER
+  color: 6 # magenta
+  linetype: DASHED
+  lineweight: 20
+
+SIGN:
+  layer: TCP_SIGN
+  color: 1 # red
+  linetype: CONTINUOUS
+  lineweight: 25
+
+CONE:
+  layer: TCP_CONE
+  color: 30 # orange, matches an actual traffic cone
+  linetype: CONTINUOUS
+  lineweight: 13
+
+WORK_POINT:
+  layer: TCP_WORK_POINT
+  color: 1 # red
+  linetype: CONTINUOUS
+  lineweight: 35
