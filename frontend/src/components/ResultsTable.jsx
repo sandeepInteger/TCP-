@@ -20,6 +20,8 @@ export default function ResultsTable({
   layerAttributes,
   featureAssignments,
   onAssignmentChange,
+  removableFrom = Infinity,
+  onRemoveFeature,
 }) {
   const [expanded, setExpanded] = useState(() => new Set());
 
@@ -53,6 +55,7 @@ export default function ResultsTable({
             <th>Geometry</th>
             <th>Points</th>
             <th>Layer</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -69,6 +72,8 @@ export default function ResultsTable({
               layerAttributes={layerAttributes}
               assignment={featureAssignments?.[idx]}
               onAssignmentChange={(attribute) => onAssignmentChange?.(idx, attribute)}
+              removable={idx >= removableFrom}
+              onRemove={() => onRemoveFeature?.(idx)}
             />
           ))}
         </tbody>
@@ -125,6 +130,8 @@ function FeatureRows({
   layerAttributes,
   assignment,
   onAssignmentChange,
+  removable,
+  onRemove,
 }) {
   const isFeatureSelected = selectedPoint?.featureIdx === idx;
 
@@ -170,11 +177,18 @@ function FeatureRows({
             ))}
           </select>
         </td>
+        <td onClick={(e) => e.stopPropagation()}>
+          {removable && (
+            <button type="button" className="feature-remove-btn" title="Remove this feature" onClick={onRemove}>
+              Remove
+            </button>
+          )}
+        </td>
       </tr>
       {isExpanded && (
         <tr className="points-row">
           <td></td>
-          <td colSpan={6}>
+          <td colSpan={7}>
             <DimensionsPanel dimensions={dimensions} />
             <table className="points-table">
               <thead>
