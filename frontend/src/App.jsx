@@ -13,6 +13,7 @@ import {
   generateDxf,
   findRoadCandidates,
   findRoadOutline,
+  transformPoint,
 } from "./api/client";
 import "./App.css";
 
@@ -87,6 +88,10 @@ function App() {
   // combine the two only for rendering/download.
   const [roadOutlineFeatures, setRoadOutlineFeatures] = useState([]);
   const [roadOutlineAssignments, setRoadOutlineAssignments] = useState([]);
+  // Size of the most recent batch added by handleFindRoadOutline, so
+  // "Remove outline" can undo exactly that batch (and only that one —
+  // applying again overwrites this before another removal is possible).
+  const [lastRoadOutlineBatchSize, setLastRoadOutlineBatchSize] = useState(0);
 
   useEffect(() => {
     fetchSetupTypes()
@@ -227,7 +232,54 @@ function App() {
 
     setRoadOutlineFeatures((prev) => [...prev, ...newFeatures]);
     setRoadOutlineAssignments((prev) => [...prev, ...newAssignments]);
+    setLastRoadOutlineBatchSize(newFeatures.length);
     return data;
+  };
+
+  const handleRemoveLastRoadOutline = () => {
+    setRoadOutlineFeatures((prev) => prev.slice(0, prev.length - lastRoadOutlineBatchSize));
+    setRoadOutlineAssignments((prev) => prev.slice(0, prev.length - lastRoadOutlineBatchSize));
+    setLastRoadOutlineBatchSize(0);
+  };
+
+  // Removes a single road-outline-derived row from the table (e.g. just
+  // the centerline or just one curb edge), rather than undoing the whole
+  // batch a "Search nearby roads" run added — see the per-row Remove
+  // button in ResultsTable, scoped to rows at/after uploadedFeatureCount.
+  const handleRemoveRoadOutlineFeature = (idx) => {
+    const roadIdx = idx - uploadedFeatureCount;
+    if (roadIdx < 0) return;
+    const batchStart = roadOutlineFeatures.length - lastRoadOutlineBatchSize;
+    setRoadOutlineFeatures((prev) => prev.filter((_, i) => i !== roadIdx));
+    setRoadOutlineAssignments((prev) => prev.filter((_, i) => i !== roadIdx));
+    if (roadIdx >= batchStart) {
+      setLastRoadOutlineBatchSize((prev) => Math.max(0, prev - 1));
+    }
+    setSelectedPoint(null);
+  };
+
+  // Lets a road-outline vertex be dragged on the map to correct it against
+  // imagery — e.g. a curve where the looked-up road shape doesn't quite
+  // track the actual pavement. Re-projects the dropped lat/lon through the
+  // backend so the feature's X/Y (used for the DXF) stays in sync with
+  // where it's now drawn. Scoped to road-outline features only, same as
+  // the per-row Remove button, since uploaded KMZ features aren't meant to
+  // be hand-edited here.
+  const handlePointDrag = async (featureIdx, pointIdx, lat, lon) => {
+    const roadIdx = featureIdx - uploadedFeatureCount;
+    if (roadIdx < 0) return;
+    try {
+      const { x, y } = await transformPoint({ lon, lat });
+      setRoadOutlineFeatures((prev) =>
+        prev.map((feature, i) =>
+          i !== roadIdx
+            ? feature
+            : { ...feature, points: feature.points.map((p, j) => (j === pointIdx ? { ...p, lat, lon, x, y } : p)) }
+        )
+      );
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   const handleFileSelected = async (file) => {
@@ -256,6 +308,7 @@ function App() {
     setSelectedPoint(null);
     setRoadOutlineFeatures([]);
     setRoadOutlineAssignments([]);
+    setLastRoadOutlineBatchSize(0);
   };
 
   const handleAssignmentChange = (idx, attribute) => {
@@ -380,6 +433,7 @@ function App() {
           <RoadOutlineFinder
             onSearch={handleSearchRoadCandidates}
             onConfirm={handleFindRoadOutline}
+            onRemove={handleRemoveLastRoadOutline}
             prefill={prefillPoint}
             defaultLengthFt={defaultLengthFt}
             defaultDimensions={defaultDimensions}
@@ -393,11 +447,18 @@ function App() {
             layerAttributes={layerAttributes}
             featureAssignments={viewAssignments}
             onAssignmentChange={handleAssignmentChange}
+            removableFrom={uploadedFeatureCount}
+            onRemoveFeature={handleRemoveRoadOutlineFeature}
           />
         </aside>
 
         <main className="workspace-map">
-          <MapPreview result={viewResult} selectedPoint={selectedPoint} />
+          <MapPreview
+            result={viewResult}
+            selectedPoint={selectedPoint}
+            editableFrom={uploadedFeatureCount}
+            onPointDrag={handlePointDrag}
+          />
         </main>
       </div>
     </div>

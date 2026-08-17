@@ -187,6 +187,22 @@
   opacity: 0.9;
 }
 
+.feature-remove-btn {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.feature-remove-btn:hover {
+  border-color: #d9534f;
+  color: #d9534f;
+}
+
 .layer-select {
   font: inherit;
   padding: 4px 8px;
@@ -533,14 +549,50 @@
   border-color: rgba(60, 180, 75, 0.4);
 }
 
+.map-preview-wrap {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
 .map-preview {
   height: 100%;
   width: 100%;
 }
 
+.map-smooth-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 13px;
+  cursor: pointer;
+}
+
 .map-empty {
   color: var(--text);
   font-size: 14px;
+}
+
+.vertex-handle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffd400;
+  border: 1.5px solid #6b5200;
+  cursor: grab;
+}
+
+.vertex-handle:active {
+  cursor: grabbing;
 }
 
 .road-outline-finder {
@@ -593,6 +645,14 @@
   background: var(--bg);
   color: var(--text-h);
   min-width: 130px;
+}
+
+.road-outline-summary-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
 .road-outline-summary {

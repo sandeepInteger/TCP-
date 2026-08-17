@@ -1,4 +1,4 @@
-const API_BASE = import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8010";
+const API_BASE = import.meta.env.VITE_API_BASE ?? "http://127.0.0.1:8000";
 
 export async function uploadKmlFile(file) {
   const formData = new FormData();
@@ -90,6 +90,20 @@ export async function findRoadOutline({ lon, lat, lengthFt = 200, roadName, widt
   const body = await response.json().catch(() => null);
   if (!response.ok) {
     throw new Error(body?.detail ?? `Road outline lookup failed (${response.status})`);
+  }
+  return body;
+}
+
+export async function transformPoint({ lon, lat }) {
+  const response = await fetch(`${API_BASE}/api/transform-point`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ lon, lat }),
+  });
+
+  const body = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(body?.detail ?? `Point transform failed (${response.status})`);
   }
   return body;
 }

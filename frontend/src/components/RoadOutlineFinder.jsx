@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 
-export default function RoadOutlineFinder({ onSearch, onConfirm, prefill, defaultLengthFt, defaultDimensions }) {
+export default function RoadOutlineFinder({ onSearch, onConfirm, onRemove, prefill, defaultLengthFt, defaultDimensions }) {
   const [lon, setLon] = useState("");
   const [lat, setLat] = useState("");
-  const [roadNameHint, setRoadNameHint] = useState("");
   const [lengthFt, setLengthFt] = useState(200);
   const [lengthTouched, setLengthTouched] = useState(false);
   const [widthFt, setWidthFt] = useState("");
@@ -65,7 +64,7 @@ export default function RoadOutlineFinder({ onSearch, onConfirm, prefill, defaul
     setSelectedName(null);
     setSearching(true);
     try {
-      const data = await onSearch({ lon: Number(lon), lat: Number(lat), roadNameHint });
+      const data = await onSearch({ lon: Number(lon), lat: Number(lat) });
       setCandidates(data.candidates);
       if (data.candidates.length > 0) setSelectedName(data.candidates[0].name);
     } catch (err) {
@@ -96,6 +95,11 @@ export default function RoadOutlineFinder({ onSearch, onConfirm, prefill, defaul
     }
   };
 
+  const handleRemove = () => {
+    onRemove();
+    setLastResult(null);
+  };
+
   return (
     <div className="road-outline-finder">
       <div className="road-outline-header">
@@ -114,15 +118,6 @@ export default function RoadOutlineFinder({ onSearch, onConfirm, prefill, defaul
         <label>
           <span>Latitude</span>
           <input type="number" step="any" value={lat} onChange={(e) => setLat(e.target.value)} placeholder="38.5816" />
-        </label>
-        <label>
-          <span>Expected road name (optional)</span>
-          <input
-            type="text"
-            value={roadNameHint}
-            onChange={(e) => setRoadNameHint(e.target.value)}
-            placeholder="e.g. Frontage Rd"
-          />
         </label>
         <button className="btn-primary" type="button" onClick={handleSearch} disabled={searching || lon === "" || lat === ""}>
           {searching ? "Searching..." : "Search nearby roads"}
@@ -179,23 +174,28 @@ export default function RoadOutlineFinder({ onSearch, onConfirm, prefill, defaul
               />
             </label>
             <button className="btn-primary" type="button" onClick={handleConfirm} disabled={confirming || !selectedName}>
-              {confirming ? "Building outline..." : "Use this road"}
+              {confirming ? "Building outline..." : "Apply outline"}
             </button>
           </div>
         </div>
       )}
 
       {lastResult && (
-        <p className="road-outline-summary">
-          Snapped to <strong>{lastResult.road_name || "(unnamed road)"}</strong>, {lastResult.offset_ft.toFixed(1)} ft
-          from the given point, on the <strong>{lastResult.side}</strong> side — extended{" "}
-          <strong>{lastResult.direction}</strong>.{" "}
-          {lastResult.buffer_zone
-            ? "Road outline, edges, buffer/taper zones, signs, cones, and your work point all added as new features below — assign each a layer to include it in the DXF."
-            : lastResult.left_edge
-              ? "Centerline plus left/right edges added as new features below — assign each a layer to include it in the DXF."
-              : "Added as a new feature below — assign it a layer to include it in the DXF."}
-        </p>
+        <div className="road-outline-summary-row">
+          <p className="road-outline-summary">
+            Snapped to <strong>{lastResult.road_name || "(unnamed road)"}</strong>, {lastResult.offset_ft.toFixed(1)} ft
+            from the given point, on the <strong>{lastResult.side}</strong> side — extended{" "}
+            <strong>{lastResult.direction}</strong>.{" "}
+            {lastResult.buffer_zone
+              ? "Road outline, edges, buffer/taper zones, signs, cones, and your work point all added as new features below — assign each a layer to include it in the DXF."
+              : lastResult.left_edge
+                ? "Centerline plus left/right edges added as new features below — assign each a layer to include it in the DXF."
+                : "Added as a new feature below — assign it a layer to include it in the DXF."}
+          </p>
+          <button className="btn-secondary" type="button" onClick={handleRemove}>
+            Remove outline
+          </button>
+        </div>
       )}
     </div>
   );

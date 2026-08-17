@@ -201,6 +201,29 @@ async def upload(file: UploadFile = File(...)):
         tmp_path.unlink(missing_ok=True)
 
 
+class TransformPointRequest(BaseModel):
+    lon: float
+    lat: float
+
+
+@app.post("/api/transform-point")
+def transform_point(req: TransformPointRequest):
+    """Re-projects a single lon/lat into the job's target X/Y — used when
+    the UI lets the user drag a map vertex to correct it against imagery
+    (e.g. a road-outline point that landed off the actual curve), so the
+    dragged point's DXF coordinates stay in sync with its map position."""
+    transformer = CoordinateTransformer()
+    x, y = transformer.to_xy(req.lon, req.lat)
+    return {
+        "lon": req.lon,
+        "lat": req.lat,
+        "x": x,
+        "y": y,
+        "source_crs": transformer.source_crs,
+        "target_crs": transformer.target_crs,
+    }
+
+
 class RoadCandidatesRequest(BaseModel):
     lon: float
     lat: float
